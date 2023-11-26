@@ -107,7 +107,7 @@ public class DBReader {
     public static ArrayList<Order> getAllOrders() throws SQLException {
 
         String query= String.format("SELECT %s, %s, %s, %s FROM %s ",
-                SchemeDB.COL_ID, SchemeDB.COL_IdProducto, SchemeDB.COL_Descripcion, SchemeDB.COL_PrecioTotal
+                SchemeDB.COL_ID, SchemeDB.COL_IdProducto, SchemeDB.COL_Descripcion, SchemeDB.COL_PrecioTotal,
                 SchemeDB.TAB_Pedidos
         );
 
@@ -120,7 +120,7 @@ public class DBReader {
             Order order=new Order(resultSet.getInt(SchemeDB.COL_ID),
                                 resultSet.getInt(SchemeDB.COL_IdProducto),
                                 resultSet.getString(SchemeDB.COL_Descripcion),
-                                resultSet.getDouble(SchemeDB.COL_Precio)
+                                resultSet.getDouble(SchemeDB.COL_PrecioTotal)
                         );
 
             aux.add(order);

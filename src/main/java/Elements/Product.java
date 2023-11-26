@@ -87,7 +87,7 @@ public class Product {
     }
 
     //Método para comprobar si la id del producto existe en la base de datos
-    private static Boolean issetId(Connection connection, String table, Product product) throws SQLException {
+    public static Boolean issetId(Connection connection, String table, Product product) throws SQLException {
 
         String query= String.format("SELECT * FROM %s WHERE %s = "+product.id, table, product.getPrimaryKey(table));
 

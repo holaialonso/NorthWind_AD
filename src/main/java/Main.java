@@ -36,17 +36,25 @@ public class Main {
 
                     JSONReader reader=new JSONReader("https://dummyjson.com/products");
                     ArrayList<Product> products = reader.readProducts(); //leo los productos y creo los objetos
-                    saveProductsBD(connection, SchemeDB.TAB_Productos, products);
+                    saveProductsDB(connection, SchemeDB.TAB_Productos, products);
                     System.out.println("Los "+products.size()+" productos han sido importados");
 
                 break;
 
                 //Crear un nuevo empleado e insertarlo en la bbdd
                 case 2:
+
+                    ArrayList<Employee> employees=Employee.makeEmployee();
+                    saveEmployeesDB(connection, employees);
+
                 break;
 
                 //Crear un nuevo pedido e insertarlo en la bbdd
                 case 3:
+
+                    ArrayList<Order> orders=Order.makeOrder();
+                    saveOrdersDB(connection, orders);
+
                 break;
 
                 //Informes de empleados, productos y pedidos
@@ -58,7 +66,7 @@ public class Main {
 
                         case 1: //empleados
 
-                            ArrayList<Employee> employees = dbReader.getAllEmployees();
+                            employees = dbReader.getAllEmployees();
                             printEmployees(employees);
 
                         break;
@@ -72,9 +80,8 @@ public class Main {
 
                         case 3: // pedidos
 
-                            ArrayList<Order> orders = dbReader.getAllOrders();
+                            orders = dbReader.getAllOrders();
                             printOrders(orders);
-
 
                         break;
                     }
@@ -93,14 +100,16 @@ public class Main {
                 case 6:
 
                     products=dbReader.getProductsByPrice(" > 1000");
-                    saveProductsBD(connection, SchemeDB.TAB_Productos_Fav, products);
+                    saveProductsDB(connection, SchemeDB.TAB_Productos_Fav, products);
 
                 break;
 
 
             }
 
-            follow=false;
+            //Compruebo si quiero seguir con la ejecución del programa
+            follow=printFollow();
+
         }
 
 
@@ -163,11 +172,63 @@ public class Main {
 
     }
 
-    //Método para guardar los productos dentro de la base de datos
-    private static void saveProductsBD(Connection connection, String table, ArrayList<Product> products) throws SQLException, IndexOutOfBoundsException {
+    //Método para comprobar si queremos seguir con la ejecución del programa
+    private static Boolean printFollow() throws IOException {
 
-        for(int i=0; i<products.size(); i++){
-            Product.save(connection, table, products.get(i));
+        BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
+
+        System.out.println("¿Quiere seguir realizando otra acción3? Y/N");
+        String cont=keyboard.readLine();
+
+        return ((cont.equals("Y"))||(cont.equals("y"))) ? true : false;
+
+    }
+
+    //Método para guardar los productos dentro de la base de datos
+    private static void saveProductsDB(Connection connection, String table, ArrayList<Product> products) throws SQLException, IndexOutOfBoundsException {
+
+        if(products.size()>0) {
+            for (int i = 0; i < products.size(); i++) {
+                Product.save(connection, table, products.get(i));
+            }
+
+            System.out.println("Se han guardado "+products.size()+" producto(s)");
+
+        }
+        else{
+            System.out.println("No hay productos que guardar");
+        }
+
+    }
+
+    //Método para guardar los empleados que creemos en la base de datos
+    private static void saveEmployeesDB(Connection connection, ArrayList<Employee> employees) throws SQLException {
+
+        if(employees.size()>0) {
+            for (int i = 0; i < employees.size(); i++) {
+                Employee.save(connection, employees.get(i));
+            }
+
+            System.out.println("Empleados guardados.");
+        }
+        else{
+            System.out.println("No hay empleados para crear.");
+        }
+    }
+
+    //Método para guardar los pedidos dentro de la base de datos
+    private static void saveOrdersDB(Connection connection, ArrayList<Order> orders) throws SQLException {
+
+        if(orders.size()>0){
+            for(int i=0; i<orders.size(); i++){
+                Order.save(connection, orders.get(i));
+            }
+
+            System.out.println("Los "+orders.size()+" pedido(s) nuevo(s)4" +
+                    " se han guardado");
+        }
+        else{
+            System.out.println("No hay pedidos para insertar.");
         }
 
     }
