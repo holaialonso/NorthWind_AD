@@ -14,9 +14,9 @@ import java.util.ArrayList;
 
 public class Main {
 
-    static Connection connection = new ConnectionDB().getConnection();
+    static Connection connection = new ConnectionDB().getConnection(); //Conexión a la base de datos
     static DBReader dbReader = new DBReader();
-    //prue
+
 
 
     //Main
@@ -27,6 +27,7 @@ public class Main {
 
         while(follow){
 
+            //Imprimo en pantalla el menú principal
             option=printMenu();
 
             //Acciones a realizar según la opción elegida en el menú principal
@@ -38,7 +39,6 @@ public class Main {
                     JSONReader reader=new JSONReader("https://dummyjson.com/products");
                     ArrayList<Product> products = reader.readProducts(); //leo los productos y creo los objetos
                     saveProductsDB(connection, SchemeDB.TAB_Productos, products);
-                    System.out.println("Los "+products.size()+" productos han sido importados");
 
                 break;
 
@@ -225,8 +225,7 @@ public class Main {
                 Order.save(connection, orders.get(i));
             }
 
-            System.out.println("Los "+orders.size()+" pedido(s) nuevo(s)4" +
-                    " se han guardado");
+            System.out.println("Los "+orders.size()+" pedido(s) nuevo(s) se han guardado");
         }
         else{
             System.out.println("No hay pedidos para insertar.");
