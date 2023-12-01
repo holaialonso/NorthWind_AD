@@ -58,7 +58,7 @@ public class Main {
                 break;
 
                 //Informes de empleados, productos y pedidos
-               /* case 4:
+                case 4:
 
                     int informe=printMenuInformes();
 
@@ -66,7 +66,7 @@ public class Main {
 
                         case 1: //empleados
 
-                            employees = dbReader.getAllEmployees();
+                            ArrayList<Employee> employees = dbReader.getAllEmployees();
                             printEmployees(employees);
 
                         break;
@@ -80,7 +80,7 @@ public class Main {
 
                         case 3: // pedidos
 
-                            orders = dbReader.getAllOrders();
+                            ArrayList<Order> orders = dbReader.getAllOrders();
                             printOrders(orders);
 
                         break;
@@ -102,7 +102,7 @@ public class Main {
                     products=dbReader.getProductsByPrice(" > 1000");
                     saveProductsDB(connection, SchemeDB.TAB_Productos_Fav, products);
 
-                break;*/
+                break;
 
 
             }
@@ -200,10 +200,6 @@ public class Main {
         }
 
     }
-
-
-
-
 
 
     //Método para mostrar los productos por pantalla
