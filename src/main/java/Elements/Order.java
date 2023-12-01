@@ -62,7 +62,7 @@ public class Order {
                     System.out.println("Id. Producto");
                     idProduct=Integer.parseInt(keyboard.readLine());
                     Product product=new Product(idProduct, "", "", 0, 0);
-                    checkProduct=Product.issetId(connection, SchemeDB.TAB_Productos, product);
+                    checkProduct=product.issetId(connection, SchemeDB.TAB_Productos);
 
                     if(!checkProduct){
                         System.out.println("Debes introducir un id de producto válido");

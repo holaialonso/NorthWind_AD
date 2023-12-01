@@ -53,32 +53,32 @@ public class Product {
 
 
     //Vistas
-    public static void print(Product product){
+    public void print(){
 
-        System.out.println("ID: "+product.id);
-        System.out.println("Nombre: "+product.name);
-        System.out.println("Descripción: "+product.description);
-        System.out.println("Cantidad: "+product.quantity);
-        System.out.println("Precio: "+product.price+"\n");
+        System.out.println("ID: "+this.id);
+        System.out.println("Nombre: "+this.name);
+        System.out.println("Descripción: "+this.description);
+        System.out.println("Cantidad: "+this.quantity);
+        System.out.println("Precio: "+this.price+"\n");
 
     }
 
 
     //Procesos
     //Método para insertar el producto en la base de datos
-    public static void save(Connection connection, String table, Product product) throws SQLException {
+    public void save(Connection connection, String table) throws SQLException {
 
         //Compruebo si la id existe dentro de la tabla, para que no me de un error al insertarlo
-        if(!Product.issetId(connection, table, product)){
+        if(!this.issetId(connection, table)){
 
             switch(table){
 
                 case SchemeDB.TAB_Productos:
-                    Product.insert(connection, product);
+                    this.insert(connection);
                     break;
 
                 case SchemeDB.TAB_Productos_Fav:
-                    Product.insertFav(connection, product);
+                    this.insertFav(connection);
                     break;
             }
 
@@ -87,9 +87,9 @@ public class Product {
     }
 
     //Método para comprobar si la id del producto existe en la base de datos
-    public static Boolean issetId(Connection connection, String table, Product product) throws SQLException {
+    public Boolean issetId(Connection connection, String table) throws SQLException {
 
-        String query= String.format("SELECT * FROM %s WHERE %s = "+product.id, table, product.getPrimaryKey(table));
+        String query= String.format("SELECT * FROM %s WHERE %s = "+this.id, table, this.getPrimaryKey(table));
 
         Statement statementSelect = connection.createStatement();
         ResultSet resultSet = statementSelect.executeQuery(query);
@@ -107,7 +107,7 @@ public class Product {
 
 
     //Método para insertar una nueva fila en la base de datos con el producto
-    private static void insert(Connection connection, Product product) throws SQLException{
+    private void insert(Connection connection) throws SQLException{
 
         //Defino la query
         String query= String.format("INSERT INTO %s (%s, %s, %s, %s, %s) VALUE (?, ?, ?, ?, ?)", SchemeDB.TAB_Productos,
@@ -120,11 +120,11 @@ public class Product {
 
         //Preparo para insertarla con los datos
         PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setInt(1, product.id);
-        preparedStatement.setString(2, product.name);
-        preparedStatement.setString(3, product.description);
-        preparedStatement.setInt(4, product.quantity);
-        preparedStatement.setDouble(5, product.price);
+        preparedStatement.setInt(1, this.id);
+        preparedStatement.setString(2, this.name);
+        preparedStatement.setString(3, this.description);
+        preparedStatement.setInt(4, this.quantity);
+        preparedStatement.setDouble(5, this.price);
 
         //Ejecuto la query
         preparedStatement.execute();
@@ -132,7 +132,7 @@ public class Product {
     }
 
     //Método para insertar una nueva fila en la base de datos / tabla de favoritos
-    private static void insertFav(Connection connection, Product product) throws SQLException {
+    private void insertFav(Connection connection) throws SQLException {
 
         //Defino la query
         String query= String.format("INSERT INTO %s (%s) VALUE (?)", SchemeDB.TAB_Productos_Fav,
@@ -142,7 +142,7 @@ public class Product {
 
         //Preparo para insertarla con los datos
         PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setInt(1, product.id);
+        preparedStatement.setInt(1, this.id);
 
         //Ejecuto la query
         preparedStatement.execute();

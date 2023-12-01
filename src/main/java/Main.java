@@ -43,7 +43,7 @@ public class Main {
                 break;
 
                 //Crear un nuevo empleado e insertarlo en la bbdd
-                case 2:
+                /*case 2:
 
                     ArrayList<Employee> employees=Employee.makeEmployee();
                     saveEmployeesDB(connection, employees);
@@ -103,7 +103,7 @@ public class Main {
                     products=dbReader.getProductsByPrice(" > 1000");
                     saveProductsDB(connection, SchemeDB.TAB_Productos_Fav, products);
 
-                break;
+                break;*/
 
 
             }
@@ -190,7 +190,7 @@ public class Main {
 
         if(products.size()>0) {
             for (int i = 0; i < products.size(); i++) {
-                Product.save(connection, table, products.get(i));
+                products.get(i).save(connection, table);
             }
 
             System.out.println("Se han guardado "+products.size()+" producto(s)");
@@ -237,7 +237,7 @@ public class Main {
     private static void printProducts(ArrayList<Product> products){
 
         for(int i=0; i<products.size(); i++){
-            Product.print(products.get(i));
+            products.get(i).print();
         }
     }
 
