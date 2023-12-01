@@ -43,13 +43,13 @@ public class Main {
                 break;
 
                 //Crear un nuevo empleado e insertarlo en la bbdd
-                /*case 2:
+                case 2:
 
-                    ArrayList<Employee> employees=Employee.makeEmployee();
-                    saveEmployeesDB(connection, employees);
+                    makeEmployees(connection);
+
 
                 break;
-
+/*
                 //Crear un nuevo pedido e insertarlo en la bbdd
                 case 3:
 
@@ -202,20 +202,8 @@ public class Main {
 
     }
 
-    //Método para guardar los empleados que creemos en la base de datos
-    private static void saveEmployeesDB(Connection connection, ArrayList<Employee> employees) throws SQLException {
 
-        if(employees.size()>0) {
-            for (int i = 0; i < employees.size(); i++) {
-                Employee.save(connection, employees.get(i));
-            }
 
-            System.out.println("Empleados guardados.");
-        }
-        else{
-            System.out.println("No hay empleados para crear.");
-        }
-    }
 
     //Método para guardar los pedidos dentro de la base de datos
     private static void saveOrdersDB(Connection connection, ArrayList<Order> orders) throws SQLException {
@@ -246,7 +234,7 @@ public class Main {
 
         if(employees.size()>0) {
             for (int i = 0; i < employees.size(); i++) {
-                Employee.print(employees.get(i));
+                employees.get(i).print();
             }
         }
         else{
@@ -269,6 +257,50 @@ public class Main {
 
     }
 
+
+    //Método para crear empleados
+    public static void makeEmployees(Connection connection) throws IOException, SQLException {
+
+        Boolean follow=true;
+        BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
+
+
+        while(follow){
+
+            System.out.println("Datos para crear un nuevo empleado");
+            System.out.println("Nombre");
+            String name=keyboard.readLine();
+            System.out.println("Apellidos");
+            String lastName=keyboard.readLine();
+
+            //Creo el empleado
+            Employee employee = new Employee(0, name, lastName, "");
+
+            //Comprobar el correo electrónico (debe ser un campo único)
+            Boolean checkEmail=true;
+
+            while(checkEmail){
+                System.out.println("Correo electrónico");
+                String email=keyboard.readLine().toLowerCase();
+                employee.setEmail(email);
+                checkEmail=employee.issetEmail(connection);
+
+                if(checkEmail){
+                    System.out.println("El email que has introducido pertenece a otro usuario dado de alta previamente, por favor, introduce uno distinto");
+                }
+            }
+
+            //Guardo el empleado
+            employee.save(connection);
+
+            System.out.println("¿Quiere introducir otro empleado? Y/N");
+            String cont=keyboard.readLine();
+            follow=((cont.equals("Y"))||(cont.equals("y"))) ? true : false;
+
+        }
+
+
+    }
 }
 
 

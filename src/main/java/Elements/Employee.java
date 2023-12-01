@@ -27,71 +27,39 @@ public class Employee {
     }
 
     //Setters
+    public void setEmail(String email){
+        this.email=email;
+    }
+
+
     //Getters
 
 
     //Vistas
-    public static void print(Employee employee){
+    public void print(){
 
-        System.out.println("ID: "+employee.id);
-        System.out.println("Nombre: "+employee.name);
-        System.out.println("Apellidos: "+employee.lastName);
-        System.out.println("Email: "+employee.email+"\n");
+        System.out.println("ID: "+this.id);
+        System.out.println("Nombre: "+this.name);
+        System.out.println("Apellidos: "+this.lastName);
+        System.out.println("Email: "+this.email+"\n");
 
     }
 
-    public static ArrayList<Employee> makeEmployee() throws IOException, SQLException {
 
-        Boolean follow=true;
-        BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
-        ArrayList<Employee> aux = new ArrayList();
-
-        while(follow){
-
-            System.out.println("Datos para crear un nuevo empleado");
-            System.out.println("Nombre");
-            String name=keyboard.readLine();
-            System.out.println("Apellidos");
-            String lastName=keyboard.readLine();
-
-            //Comprobar el correo electrónico (debe ser un campo único)
-            Boolean checkEmail=true;
-
-            while(checkEmail){
-                System.out.println("Correo electrónico");
-                String email=keyboard.readLine().toLowerCase();
-                checkEmail=Employee.checkEmail(aux, email);
-
-                if(checkEmail){
-                    System.out.println("El email que has introducido pertenece a otro usuario dado de alta previamente, por favor, introduce uno distinto");
-                }
-            }
-
-
-            aux.add(new Employee(0, name, lastName, email));
-
-            System.out.println("¿Quiere introducir otro empleado? Y/N");
-            String cont=keyboard.readLine();
-            follow=((cont.equals("Y"))||(cont.equals("y"))) ? true : false;
-
-        }
-
-        return aux;
-    }
 
     //Procesos
-    public static void save(Connection connection, Employee employee) throws SQLException {
+    public void save(Connection connection) throws SQLException {
 
-        if(!Employee.issetEmail(connection, employee)){
-            Employee.insert(connection, employee);
+        if(!this.issetEmail(connection)){
+            this.insert(connection);
 
         }
     }
 
         //Método para comprobar que, con los datos que hemos introducido, no existe ningún otro empleado
-        private static Boolean issetEmail(Connection connection, Employee employee) throws SQLException {
+        public Boolean issetEmail(Connection connection) throws SQLException {
 
-            String query= String.format("SELECT * FROM %s WHERE %s = '"+employee.email+"'",
+            String query= String.format("SELECT * FROM %s WHERE %s = '"+this.email+"'",
                                         SchemeDB.TAB_Empleados,
                                         SchemeDB.COL_Correo
                                         );
@@ -111,7 +79,7 @@ public class Employee {
         }
 
         //Método para insertar un nuevo empleado en la base de datos
-        private static void insert(Connection connection, Employee employee) throws SQLException {
+        private void insert(Connection connection) throws SQLException {
 
             //Defino la query
             String query= String.format("INSERT INTO %s (%s, %s, %s) VALUE (?, ?, ?)", SchemeDB.TAB_Empleados,
@@ -122,9 +90,9 @@ public class Employee {
 
             //Preparo para insertarla con los datos
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, employee.name);
-            preparedStatement.setString(2, employee.lastName);
-            preparedStatement.setString(3, employee.email);
+            preparedStatement.setString(1, this.name);
+            preparedStatement.setString(2, this.lastName);
+            preparedStatement.setString(3, this.email);
 
 
             //Ejecuto la query
@@ -132,32 +100,7 @@ public class Employee {
         }
 
 
-        //Método para comprobrar si el email de un empleado existe dentro de una lista de empleados
-        private static Boolean checkEmail(ArrayList<Employee> employees, String email) throws SQLException {
 
 
-
-            //1. El email puede existir dentro de la lista de usuarios que estamos dando de alta
-
-                Boolean aux=(employees.size()==0) ? false : true;
-
-                for(int i=0; i<employees.size(); i++){
-
-                    if(email.equals(employees.get(i).email)){
-                        aux=true;
-                    }
-                }
-
-
-            //2. El email puede existir dentro de un usuario en la base de datos
-                if(!aux) {
-                    Employee employee = new Employee(0, "", "", email);
-                    Connection connection = new ConnectionDB().getConnection();
-                    aux=Employee.issetEmail(connection, employee);
-                }
-
-            return aux;
-
-        }
 
 }
