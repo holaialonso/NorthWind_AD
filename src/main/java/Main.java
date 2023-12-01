@@ -47,19 +47,18 @@ public class Main {
 
                     makeEmployees(connection);
 
-
                 break;
-/*
+
                 //Crear un nuevo pedido e insertarlo en la bbdd
                 case 3:
 
-                    ArrayList<Order> orders=Order.makeOrder();
-                    saveOrdersDB(connection, orders);
+                    makeOrders(connection);
+
 
                 break;
 
                 //Informes de empleados, productos y pedidos
-                case 4:
+               /* case 4:
 
                     int informe=printMenuInformes();
 
@@ -205,21 +204,7 @@ public class Main {
 
 
 
-    //Método para guardar los pedidos dentro de la base de datos
-    private static void saveOrdersDB(Connection connection, ArrayList<Order> orders) throws SQLException {
 
-        if(orders.size()>0){
-            for(int i=0; i<orders.size(); i++){
-                Order.save(connection, orders.get(i));
-            }
-
-            System.out.println("Los "+orders.size()+" pedido(s) nuevo(s) se han guardado");
-        }
-        else{
-            System.out.println("No hay pedidos para insertar.");
-        }
-
-    }
 
     //Método para mostrar los productos por pantalla
     private static void printProducts(ArrayList<Product> products){
@@ -298,6 +283,56 @@ public class Main {
             follow=((cont.equals("Y"))||(cont.equals("y"))) ? true : false;
 
         }
+
+
+    }
+
+
+    //Método para crear pedidos
+    public static void makeOrders(Connection connection) throws IOException, SQLException {
+
+        Boolean follow=true;
+        BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
+
+
+        while(follow){
+
+            System.out.println("Datos para crear un nuevo pedido");
+
+            //Id del producto
+            Boolean checkProduct=false;
+            int idProduct=0;
+
+            while(!checkProduct){
+                System.out.println("Id. Producto");
+                idProduct=Integer.parseInt(keyboard.readLine());
+                Product product=new Product(idProduct, "", "", 0, 0);
+                checkProduct=product.issetId(connection, SchemeDB.TAB_Productos);
+
+                if(!checkProduct){
+                    System.out.println("Debes introducir un id de producto válido");
+                }
+            }
+
+            //Resto de valores
+            System.out.println("Descripción");
+            String description= keyboard.readLine();
+
+            System.out.println("Precio total");
+            Double totalPrice=Double.parseDouble(keyboard.readLine());
+
+            //Creo el pedido
+            Order order =new Order(0, idProduct, description, totalPrice);
+            order.save(connection);
+
+
+            //Compruebo si quiero seguir introduciendo pedidos
+            System.out.println("¿Quiere introducir otro pedido? Y/N");
+            String cont=keyboard.readLine();
+            follow=((cont.equals("Y"))||(cont.equals("y"))) ? true : false;
+
+        }
+
 
 
     }
